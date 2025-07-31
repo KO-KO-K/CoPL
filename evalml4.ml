@@ -6,7 +6,7 @@ type exp =
     I of int
   | B of bool
   | X of string
-  | Cal of op * exp * exp
+  | Cal of op * exp * exp (*二項演算*)
   | If of exp * exp * exp
   | Let of string * exp * exp
   | Fun of string * exp
@@ -97,14 +97,14 @@ let rec eval env e = match e with
     I i -> (EInt (Evalto (env, e, VInt i)), VInt i)
   | B b -> (EBool (Evalto (env, e, VBool b)), VBool b)
   | X x -> begin match env with
-    [] -> raise Hoge
-  | (x0, v0) :: rest -> if x = x0 then (EVar (Evalto (env, e, v0)), v0) else let (_, v) = eval rest e in (EVar (Evalto (env, e, v)), v) end
+      [] -> raise Hoge
+    | (x0, v0) :: rest -> if x = x0 then (EVar (Evalto (env, e, v0)), v0) else let (_, v) = eval rest e in (EVar (Evalto (env, e, v)), v) end
   | Cal (op, e1, e2) -> let (d1, v1) = eval env e1 in let (d2, v2) = eval env e2 in begin match v1, v2 with
-  | VInt i1, VInt i2 -> begin match op with
-        P -> let i = VInt (i1 + i2) in (EPlus (Evalto (env, e, i), d1, d2, deriv (Plus (i1, i2, i1 + i2))), i)
-      | M -> let i = VInt (i1 - i2) in (EMinus (Evalto (env, e, i), d1, d2, deriv (Minus (i1, i2, i1 - i2))), i)
-      | T -> let i = VInt (i1 * i2) in (ETimes (Evalto (env, e, i), d1, d2, deriv (Times (i1, i2, i1 * i2))), i)
-      | L -> let b = VBool (i1 < i2) in (ELT (Evalto (env, e, b), d1, d2, deriv (Less (i1, i2, i1 < i2))), b) end
+      VInt i1, VInt i2 -> begin match op with
+          P -> let i = VInt (i1 + i2) in (EPlus (Evalto (env, e, i), d1, d2, deriv (Plus (i1, i2, i1 + i2))), i)
+        | M -> let i = VInt (i1 - i2) in (EMinus (Evalto (env, e, i), d1, d2, deriv (Minus (i1, i2, i1 - i2))), i)
+        | T -> let i = VInt (i1 * i2) in (ETimes (Evalto (env, e, i), d1, d2, deriv (Times (i1, i2, i1 * i2))), i)
+        | L -> let b = VBool (i1 < i2) in (ELT (Evalto (env, e, b), d1, d2, deriv (Less (i1, i2, i1 < i2))), b) end
     | _ -> raise Hoge end
   | If (e1, e2, e3) -> let (d1, v1) = eval env e1 in begin match v1 with
     | VBool true -> let (d2, v2) = eval env e2 in (EIfT (Evalto (env, e, v2), d1, d2), v2)

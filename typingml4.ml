@@ -15,7 +15,7 @@ type exp =
   | LetRec of string * string * exp * exp * typing * typing (*y, e1*)
   | Nil
   | Cons of exp * exp
-  | Match of exp * exp * string * string * exp * typing
+  | Match of exp * exp * string * string * exp * typing (*x*)
 
 type env = (string * typing) list
 type judgement = Typing of env * exp * typing

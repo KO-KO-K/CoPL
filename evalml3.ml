@@ -6,7 +6,7 @@ type exp =
     I of int
   | B of bool
   | X of string
-  | Cal of op * exp * exp
+  | Cal of op * exp * exp (*二項演算*)
   | If of exp * exp * exp
   | Let of string * exp * exp
   | Fun of string * exp
