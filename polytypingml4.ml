@@ -16,7 +16,7 @@ type exp =
   | LetRec of string * string * exp * exp * typing * typing (*y, e1*)
   | Nil
   | Cons of exp * exp
-  | Match of exp * exp * string * string * exp * typing
+  | Match of exp * exp * string * string * exp * typing (*x*)
 
 type env = (string * tyscheme) list
 type judgement = Typing of env * exp * typing
@@ -93,6 +93,7 @@ let rec insert x = function
   | y::rest -> if x = y then y :: rest else y :: insert x rest
 let union xs ys =
   List.fold_left (fun zs x -> insert x zs) xs ys
+  
 let rec ftv t = match t with
     TyVar i -> [i]
   | TyInt | TyBool -> []
@@ -135,7 +136,7 @@ let rec typing env e t = match e with
     | _ -> raise Hoge end
   | Match (e1, e2, x, y, e3, t1) -> let d1 = typing env e1 (TyList t1) in let d2 = typing env e2 t in
     let d3 = typing ((y, TyScheme ([], TyList t1)) :: (x, TyScheme ([], t1)) :: env) e3 t in TMatch (Typing (env, e, t), d1, d2, d3)
-and deriv (Typing (env, e, t)) = typing env e t
+let deriv (Typing (env, e, t)) = typing env e t
 
 let string_judgement = function Typing (env, e, v) -> string_env env ^ " |- " ^ string_exp e ^ " : " ^ string_type v
 
